@@ -10,15 +10,14 @@ spec:
    restartPolicy: Never
    containers:
    - name: pytorch-con
-     image: git.ecdf.ed.ac.uk/hsamuel/multi-node_pytorch
-     imagePullPolicy: Always
+     image: dimmestp/multi_node_pytorch:latest
      command: ["python3"]
      args: ["main.py"]
      resources:
       requests:
-       cpu: 1
-       memory: "4Gi"
+       cpu: 10
+       memory: "40Gi"
       limits:
-       cpu: 1
-       memory: "8Gi"
+       cpu: 10
+       memory: "80Gi"
        nvidia.com/gpu: 1

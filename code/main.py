@@ -10,7 +10,7 @@ class ImagenetDataset(Dataset):
     def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
         self.img_labels = pd.read_csv(annotations_file, sep='\t')
         self.img_dir = img_dir
-        self.transform = Resize([3,200,200])
+        self.transform = Resize([300,300])
         self.target_transform = target_transform
 
     def __len__(self):

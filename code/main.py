@@ -1,54 +1,37 @@
-import torch
-from torch import nn
+import os
+import pandas as pd
+from torchvision.io import read_image
 from torch.utils.data import DataLoader
-from torchvision import datasets
-from torchvision.transforms import ToTensor
 
-# Download training data from open datasets.
-training_data = datasets.FashionMNIST(
-    root="data",
-    train=True,
-    download=True,
-    transform=ToTensor(),
-)
+class ImagenetDataset(Dataset):
+    def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
+        self.img_labels = pd.read_csv(annotations_file, sep='\t')
+        self.img_dir = img_dir
+        self.transform = transform
+        self.target_transform = target_transform
 
-# Download test data from open datasets.
-test_data = datasets.FashionMNIST(
-    root="data",
-    train=False,
-    download=True,
-    transform=ToTensor(),
-)
+    def __len__(self):
+        return len(self.img_labels)
 
-batch_size = 64
+    def __getitem__(self, idx):
+        img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
+        image = read_image(img_path)
+        label = self.img_labels.iloc[idx, 1]
+        if self.transform:
+            image = self.transform(image)
+        if self.target_transform:
+            label = self.target_transform(label)
+        return image, label
 
-# Create data loaders.
-train_dataloader = DataLoader(training_data, batch_size=batch_size)
-test_dataloader = DataLoader(test_data, batch_size=batch_size)
+training_data = ImagenetDataset(annotations_file = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/train/image_labels.txt", 
+				img_dir = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/train/")
 
-for X, y in test_dataloader:
-    print(f"Shape of X [N, C, H, W]: {X.shape}")
-    print(f"Shape of y: {y.shape} {y.dtype}")
-    break
+train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
 
-device = "cuda"
-
-class NeuralNetwork(nn.Module):
-	def __init__(self):
-		super().__init__()
-		self.flatten = nn.Flatten()
-		self.linear_relu_stack = nn.Sequential(
-			nn.Linear(28*28,512),
-			nn.ReLU(),
-			nn.Linear(512, 512),
-			nn.ReLU(),
-			nn.Linear(512, 10)
-		)
-
-	def forward(self, x):
-		x = self.flatten(x)
-		logits = self.linear_relu_stack(x)
-		return logits
-
-model = NeuralNetwork().to(device)
-print(model)
+# Display image and label.
+train_features, train_labels = next(iter(train_dataloader))
+print(f"Feature batch shape: {train_features.size()}")
+print(f"Labels batch shape: {train_labels.size()}")
+img = train_features[0].squeeze()
+label = train_labels[0]
+print(f"Label: {label}")

@@ -21,3 +21,10 @@ spec:
        cpu: 10
        memory: "80Gi"
        nvidia.com/gpu: 1
+     volumeMounts:
+     - mountPath: /mnt/ceph_rbd
+       name: volume
+   volumes:
+   - name: volume
+     persistentVolumeClaim:
+      claimName: benchmark-imagenet-pvc

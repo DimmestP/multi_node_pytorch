@@ -4,7 +4,7 @@ from torchvision.io import read_image
 from torch.utils.data import DataLoader
 import torch
 from torch.utils.data import Dataset
-from torchvision.transforms.v2 import Resize Lambda
+from torchvision.transforms.v2 import Resize, Lambda
 
 class ImagenetDataset(Dataset):
     def __init__(self, annotations_file, img_dir):

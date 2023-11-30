@@ -4,12 +4,13 @@ from torchvision.io import read_image
 from torch.utils.data import DataLoader
 import torch
 from torch.utils.data import Dataset
+from torchvision.transforms.v2 import Resize
 
 class ImagenetDataset(Dataset):
     def __init__(self, annotations_file, img_dir, transform=None, target_transform=None):
         self.img_labels = pd.read_csv(annotations_file, sep='\t')
         self.img_dir = img_dir
-        self.transform = transform
+        self.transform = Resize([3,200,200])
         self.target_transform = target_transform
 
     def __len__(self):

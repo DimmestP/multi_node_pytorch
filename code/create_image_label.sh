@@ -11,6 +11,6 @@ do
 
         for filename in $foldername/*
         do
-                echo "$filename $image_label" >> image_labels.txt
+                echo "$filename	$image_label" >> image_labels.txt
         done
 done

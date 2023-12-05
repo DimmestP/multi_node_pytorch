@@ -27,12 +27,23 @@ class ImagenetDataset(Dataset):
 training_data = ImagenetDataset(annotations_file = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/train/image_labels.txt",
 				img_dir = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/train/")
 
+validation_data = ImagenetDataset(annotations_file = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/validation/image_labels.txt",
+                                img_dir = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/validation/")
+
 train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
+
+validation_dataloader = DataLoader(validation_data, batch_size=64, shuffle=True)
 
 # Display image and label.
 train_features, train_labels = next(iter(train_dataloader))
+validation_features, validation_labels = next(iter(validation_dataloader))
+
 print(f"Feature batch shape: {train_features.size()}")
 print(f"Labels batch shape: {train_labels.size()}")
+
+print(f"Feature batch shape: {validation_features.size()}")
+print(f"Labels batch shape: {validation_labels.size()}")
+
 img = train_features[0].squeeze()
 label = train_labels[0]
 print(f"Label: {label}")

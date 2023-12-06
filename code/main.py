@@ -15,7 +15,7 @@ device = "cuda"
 class ImagenetDataset(Dataset):
 	def __init__(self, annotations_file, img_dir):
 		self.img_labels_raw = pd.read_csv(annotations_file, sep='\t', header = None)
-		self.img_labels = torch.IntTensor(numpy.array(pd.get_dummies(self.img_labels_raw[1])))
+		self.img_labels = torch.LongTensor(numpy.array(pd.get_dummies(self.img_labels_raw[1])))
 		self.img_dir = img_dir
 		self.transform = Resize([300,300], antialias=True)
 
@@ -24,7 +24,7 @@ class ImagenetDataset(Dataset):
 
 	def __getitem__(self, idx):
 		img_path = os.path.join(self.img_dir, self.img_labels_raw.iloc[idx, 0])
-		image = read_image(img_path)
+		image = read_image(img_path).to(torch.float32)
 		label = self.img_labels[idx]
 		image = self.transform(image)
 		return image, label
@@ -45,11 +45,11 @@ class NeuralNetwork(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(28*28, 512),
+            nn.Linear(300*300*3, 512),
             nn.ReLU(),
             nn.Linear(512, 512),
             nn.ReLU(),
-            nn.Linear(512, 3)
+            nn.Linear(512, 4)
         )
 
     def forward(self, x):
@@ -60,7 +60,7 @@ class NeuralNetwork(nn.Module):
 model = NeuralNetwork().to(device)
 print(model)
 
-loss_fn = nn.CrossEntropyLoss()
+loss_fn = nn.MultiLabelMarginLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
 def train(dataloader, model, loss_fn, optimizer):

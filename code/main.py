@@ -17,14 +17,14 @@ class ImagenetDataset(Dataset):
 		self.img_labels_raw = pd.read_csv(annotations_file, sep='\t', header = None)
 		self.img_labels = torch.LongTensor(numpy.array(pd.get_dummies(self.img_labels_raw[1])))
 		self.img_dir = img_dir
-		self.transform = Resize([300,300], antialias=True)
+		self.transform = RandomCrop(size=(300,300), antialias=True)
 
 	def __len__(self):
 		return len(self.img_labels)
 
 	def __getitem__(self, idx):
 		img_path = os.path.join(self.img_dir, self.img_labels_raw.iloc[idx, 0])
-		image = read_image(img_path).to(torch.float32)
+		image = read_image(img_path).to(torch.float32).to(device)
 		label = self.img_labels[idx]
 		image = self.transform(image)
 		return image, label

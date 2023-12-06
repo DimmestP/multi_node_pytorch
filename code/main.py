@@ -35,9 +35,9 @@ training_data = ImagenetDataset(annotations_file = "/mnt/ceph_rbd/imagenet_data/
 validation_data = ImagenetDataset(annotations_file = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/validation/image_labels.txt",
                                 img_dir = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/validation/")
 
-train_dataloader = DataLoader(training_data, batch_size=128, shuffle=True)
+train_dataloader = DataLoader(training_data, batch_size=1, shuffle=True)
 
-validation_dataloader = DataLoader(validation_data, batch_size=128, shuffle=True)
+validation_dataloader = DataLoader(validation_data, batch_size=1, shuffle=True)
 
 # Define model
 class NeuralNetwork(nn.Module):

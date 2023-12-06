@@ -8,7 +8,7 @@ from torch import nn
 from torch.utils.data import Dataset
 from torchvision.transforms.v2 import Resize, Lambda
 
-device = "cuda"
+device = torch.device('cuda')
 
 # Import data
 
@@ -35,9 +35,9 @@ training_data = ImagenetDataset(annotations_file = "/mnt/ceph_rbd/imagenet_data/
 validation_data = ImagenetDataset(annotations_file = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/validation/image_labels.txt",
                                 img_dir = "/mnt/ceph_rbd/imagenet_data/imagenet_data_subset/validation/")
 
-train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
+train_dataloader = DataLoader(training_data, batch_size=128, shuffle=True)
 
-validation_dataloader = DataLoader(validation_data, batch_size=64, shuffle=True)
+validation_dataloader = DataLoader(validation_data, batch_size=128, shuffle=True)
 
 # Define model
 class NeuralNetwork(nn.Module):
@@ -101,5 +101,6 @@ epochs = 5
 for t in range(epochs):
     print(f"Epoch {t+1}\n-------------------------------")
     train(train_dataloader, model, loss_fn, optimizer)
-    test(test_dataloader, model, loss_fn)
+    test(validation_dataloader, model, loss_fn)
+
 print("Done!")

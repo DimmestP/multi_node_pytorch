@@ -17,7 +17,7 @@ class ImagenetDataset(Dataset):
 		self.img_labels_raw = pd.read_csv(annotations_file, sep='\t', header = None)
 		self.img_labels = torch.LongTensor(numpy.array(pd.get_dummies(self.img_labels_raw[1])))
 		self.img_dir = img_dir
-		self.transform = RandomCrop(size=(300,300))
+		self.transform = RandomCrop(size=(96,96))
 
 	def __len__(self):
 		return len(self.img_labels)
@@ -45,7 +45,7 @@ class NeuralNetwork(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(300*300*3, 512),
+            nn.Linear(96*96*3, 512),
             nn.ReLU(),
             nn.Linear(512, 512),
             nn.ReLU(),

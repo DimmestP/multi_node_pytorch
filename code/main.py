@@ -4,6 +4,7 @@ import numpy
 from torchvision.io import read_image
 from torch.utils.data import DataLoader
 import torch
+from torch import nn
 from torch.utils.data import Dataset
 from torchvision.transforms.v2 import Resize, Lambda
 

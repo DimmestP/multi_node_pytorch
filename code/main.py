@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import torch
 from torch import nn
 from torch.utils.data import Dataset
-from torchvision.transforms.v2 import Resize, Lambda
+from torchvision.transforms.v2 import RandomCrop, Lambda
 
 device = torch.device('cuda')
 

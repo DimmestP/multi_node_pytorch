@@ -12,7 +12,7 @@ spec:
    - name: pytorch-con
      image: dimmestp/multi_node_pytorch:latest
      command: ["python3"]
-     args: ["main.py"]
+     args: ["multi_node_pytorch/code/main.py"]
      resources:
       requests:
        cpu: 10
@@ -24,7 +24,26 @@ spec:
      volumeMounts:
      - mountPath: /mnt/ceph_rbd
        name: volume
+     - mountPath: /code
+       name: github-code
+   initContainers:
+   - name: lightweight-git-container
+     image: cicirello/alpine-plus-plus
+     command: ['sh', '-c', "cd /code; git clone https://github.com/DimmestP/multi_node_pytorch.git"]
+     resources:
+      requests:
+       cpu: 1
+       memory: "4Gi"
+      limits:
+       cpu: 1
+       memory: "8Gi"
+     volumeMounts:
+     - mountPath: /code 
+       name: github-code
    volumes:
    - name: volume
      persistentVolumeClaim:
       claimName: benchmark-imagenet-pvc
+   - name: github-code
+     emptyDir:
+      sizeLimit: 1Gi

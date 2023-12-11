@@ -31,4 +31,4 @@ for i in range(0,(len(img_labels)-1)):
         if image.size()[0] != 3:
                 greyscale_images.append(i)
 
-img_labels.drop(index=greyscale_images).to_csv(annotations_file, sep='\t')
+img_labels.drop(index=greyscale_images).to_csv(annotations_file, sep='\t', header=False, index=False)

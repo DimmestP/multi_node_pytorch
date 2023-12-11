@@ -3,9 +3,7 @@ name: ci
 on:
   push:
     paths:
-      - './code/docker/**'
-    branches:
-      - 'main'
+      - 'code/docker/**'
 
 jobs:
   docker:

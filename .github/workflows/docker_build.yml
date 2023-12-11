@@ -2,8 +2,6 @@ name: ci
 
 on:
   push:
-    branches:
-      - main
     paths:
       - 'code/docker/**'
 
@@ -27,6 +25,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: './code/docker'
+          context: "{{defaultContext}}:code/docker"
           push: true
           tags: dimmestp/multi_node_pytorch:latest

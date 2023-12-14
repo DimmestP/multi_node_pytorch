@@ -61,7 +61,7 @@ class NeuralNetwork(nn.Module):
 model = NeuralNetwork().to(device)
 print(model)
 
-loss_fn = nn.MultiLabelMarginLoss()
+loss_fn = nn.MultiMarginLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
 def train(dataloader, model, loss_fn, optimizer):

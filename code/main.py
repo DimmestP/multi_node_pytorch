@@ -16,7 +16,6 @@ device = torch.device('cuda')
 
 class ImagenetDataset(Dataset):
 	def __init__(self, annotations_file, img_dir):
-def __init__(self, annotations_file, img_dir):
 		self.img_labels_raw = pd.read_csv(annotations_file, sep='\t', header = None)
 		self.LabelEncoder = LabelEncoder()
 		self.LabelEncoder.fit(self.img_labels_raw[1])

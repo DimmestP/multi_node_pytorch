@@ -9,11 +9,11 @@ spec:
    command: ["sleep", "infinity"]
    resources:
     requests:
-     cpu: 1
-     memory: "1Gi"
+     cpu: 10
+     memory: "10Gi"
     limits:
-     cpu: 1
-     memory: "1Gi"
+     cpu: 10
+     memory: "10Gi"
      nvidia.com/gpu: 1
    volumeMounts:
    - mountPath: /mnt/ceph_rbd

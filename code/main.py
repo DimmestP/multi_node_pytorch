@@ -7,6 +7,8 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset
 from torchvision.transforms.v2 import Resize, Lambda
+from sklearn.preprocessing import LabelEncoder
+
 
 device = torch.device('cuda')
 
@@ -14,14 +16,13 @@ device = torch.device('cuda')
 
 class ImagenetDataset(Dataset):
 	def __init__(self, annotations_file, img_dir):
-		self.img_labels_raw = pd.read_csv(annotations_file, sep='\t', header = None)
-		self.img_labels = torch.LongTensor(numpy.array(pd.get_dummies(self.img_labels_raw[1])))
+		self.LabelEncoder = LabelEncoder()
+		self.img_labels_raw = self.LabelEncoder(pd.read_csv(annotations_file, sep='\t', header = None)[1])
+		self.img_labels = torch.LongTensor(numpy.array(self.img_labels_raw))
 		self.img_dir = img_dir
 		self.transform = Resize(size=(96,96), antialias=True)
-
 	def __len__(self):
 		return len(self.img_labels)
-
 	def __getitem__(self, idx):
 		img_path = os.path.join(self.img_dir, self.img_labels_raw.iloc[idx, 0])
 		image = read_image(img_path).to(torch.float32).to(device)
@@ -51,7 +52,6 @@ class NeuralNetwork(nn.Module):
             nn.ReLU(),
             nn.Linear(512, 4)
         )
-
     def forward(self, x):
         x = self.flatten(x)
         logits = self.linear_relu_stack(x)
@@ -68,16 +68,13 @@ def train(dataloader, model, loss_fn, optimizer):
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
-
         # Compute prediction error
         pred = model(X)
         loss = loss_fn(pred, y)
-
         # Backpropagation
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-
         if batch % 100 == 0:
             loss, current = loss.item(), (batch + 1) * len(X)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
